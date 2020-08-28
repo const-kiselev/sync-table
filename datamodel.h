@@ -1,7 +1,7 @@
 #ifndef DATAMODEL_H
 #define DATAMODEL_H
 
-#include <QSqlTableModel>
+#include <QSqlRelationalTableModel>
 
 //! Класс, отвечающий за обработку и хранение данных
 /*!
@@ -29,7 +29,7 @@ private:
     };
 
     QSqlDatabase*   m_pDB;
-    QSqlTableModel* m_pTableModel;
+    QSqlRelationalTableModel* m_pTableModel;
 
 private:
     //! Метод, для получения массива со всеми данными из БД
@@ -46,7 +46,7 @@ public:
     void            initAsServer();
     //! Инициализация модели данных, для клиентского решения
     void            initAsClient();
-    QSqlTableModel* getPTableModel() const;
+    QSqlRelationalTableModel* getPTableModel() const;
 
 public slots:
     //! отвечает за добавление новой строки в конец таблицы

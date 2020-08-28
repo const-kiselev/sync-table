@@ -40,7 +40,7 @@ virtual
     //! Данный метод-слот срабатывает, когда сервер готов получить пакеты от клиента
     void        server_readClient   ();
 public:
-                Network();
+                Network(QObject*par=nullptr);
                 ~Network();
     //! Возвращает true, если есть возможность подключиться к серверу
     bool        isServerAvailable();

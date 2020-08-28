@@ -313,12 +313,12 @@ void DataModel::init()
     m_pTableModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Name"));
     m_pTableModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Telefon"));
     m_pTableModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Country"));
-    ((QSqlRelationalTableModel*)m_pTableModel)->setRelation(3, QSqlRelation("country", "id", "name"));
+    m_pTableModel->setRelation(3, QSqlRelation("country", "id", "name"));
 
     connect(m_pTableModel, SIGNAL(beforeUpdate(int, QSqlRecord&)), this, SLOT(changeData(int, QSqlRecord&)));
 }
 
-QSqlTableModel *DataModel::getPTableModel() const
+QSqlRelationalTableModel *DataModel::getPTableModel() const
 {
     return m_pTableModel;
 }

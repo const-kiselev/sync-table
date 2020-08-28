@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     // Создаем объект, отвечающий за коммуникацию. Происходит определение, будет ли он работать
     // как сервер, или как клиент.
-    Network network;
+    Network network(&a);
     //Создаем объект, отвечающий за представление данных.
     DataModel dataModel;
 

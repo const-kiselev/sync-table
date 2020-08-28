@@ -3,7 +3,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-Network::Network(): QObject(0), m_pTcpServer(nullptr),
+Network::Network(QObject *par): QObject(par), m_pTcpServer(nullptr),
                                 m_pTcpSocket(nullptr),
                                 m_pClientTcpSocket(nullptr),
                                 m_nNextBlockSize(0),
@@ -61,7 +61,7 @@ void Network::server_newConnection()
     if(m_pClientTcpSocket)
         return;
     m_pClientTcpSocket = m_pTcpServer->nextPendingConnection();
-    connect(m_pClientTcpSocket, &QTcpSocket::disconnected,[=](){
+    connect(m_pClientTcpSocket, &QTcpSocket::disconnected,[this](){
         m_pClientTcpSocket->deleteLater();
         m_pClientTcpSocket=nullptr;
         emit(changeConnectionType("SERVER. \n"));
@@ -127,9 +127,10 @@ int Network::initTCPSocket()
         connect(m_pTcpSocket,  &QTcpSocket::readyRead,
                 this, &Network::client_readyReadFromServer
                 );
-        connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-                this,         SLOT(client_getError(QAbstractSocket::SocketError))
-               );
+
+        connect(m_pTcpSocket, &QTcpSocket::errorOccurred,
+                        this,         &Network::client_getError
+                       );
     m_state = NetworkSate::Client;
     emit(changeConnectionType("CLIENT. \n"));
 
