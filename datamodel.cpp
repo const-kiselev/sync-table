@@ -41,6 +41,7 @@ void DataModel::initAsServer()
             dbName = QFileDialog::getSaveFileName(nullptr,
                         tr("SQlite database file with person information"), QDir::homePath(),
                         tr("SQlite database file (*.sqlite)"));
+        dbName.append(".sqlite");
         m_pDB->setDatabaseName(dbName);
         m_pDB->open();
         QSqlQuery query(*m_pDB);
