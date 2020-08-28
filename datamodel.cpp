@@ -28,9 +28,11 @@ DataModel::~DataModel()
 
 void DataModel::initAsServer()
 {
-    int n = QMessageBox::information(nullptr,"W arning",
-    "Привет! Для начала необходимо определиться, будем ли мы создавать новую БД или будем работать с уже существующей."
-    "\n Создадим новую БД?",
+    int n = QMessageBox::information(nullptr,"New DB",
+    "Создать новую базу данных SQLite?"
+    "\n\nДля данной программы БД SQLite — это файл, который должен в себе содержать "
+    "таблицы `person` и `country` с корректными данными и подходящими кофигурациями. "
+    "Если Вы не уверенеы, что у Вас есть подобный файл для загрузки, создайте новый!",
                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     QString dbName;
     if(n == QMessageBox::Yes)
@@ -91,29 +93,21 @@ void DataModel::addRow()
 
     m_pTableModel->select();
 
-    qu.exec("SELECT TOP 1 * FROM Table ORDER BY ID DESC");
-    qu.first();
+    qu.exec("SELECT * FROM person ORDER BY ID DESC LIMIT 1;");
+    qu.next();
 
     QJsonObject textObject;
     textObject["action"] = DataModel::ActionType::setElement;
     QJsonArray dataArray;
     QJsonObject jsonRow;
-    jsonRow["ID"] = qu.value("ID").toInt();
-    jsonRow["Name"] = qu.value("Name").toString();
-    jsonRow["Telefon"] = qu.value("Telefon").toString();
-
-    jsonRow["Country"] = qu.value("Country").toInt();
-
+    jsonRow["ID"] = qu.value(0).toInt();
+    jsonRow["Name"] = qu.value(1).toString();
+    jsonRow["Telefon"] = qu.value(2).toString();
+    jsonRow["Country"] = qu.value(3).toInt();
     dataArray.append(jsonRow);
-
     textObject["data"] = dataArray;
+    qDebug() << textObject;
     emit(writeData(QJsonDocument(textObject).toJson(QJsonDocument::Compact)));
-
-
-
-
-
-//        sendAllData();
 }
 
 void DataModel::changeData(int row, QSqlRecord &record)
