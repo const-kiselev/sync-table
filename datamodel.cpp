@@ -88,31 +88,54 @@ void DataModel::addRow()
                   "VALUES ('', '', 1)");
     qu.exec();
 
+
     m_pTableModel->select();
-        sendAllData();
+
+    qu.exec("SELECT TOP 1 * FROM Table ORDER BY ID DESC");
+    qu.first();
+
+    QJsonObject textObject;
+    textObject["action"] = DataModel::ActionType::setElement;
+    QJsonArray dataArray;
+    QJsonObject jsonRow;
+    jsonRow["ID"] = qu.value("ID").toInt();
+    jsonRow["Name"] = qu.value("Name").toString();
+    jsonRow["Telefon"] = qu.value("Telefon").toString();
+
+    jsonRow["Country"] = qu.value("Country").toInt();
+
+    dataArray.append(jsonRow);
+
+    textObject["data"] = dataArray;
+    emit(writeData(QJsonDocument(textObject).toJson(QJsonDocument::Compact)));
+
+
+
+
+
+//        sendAllData();
 }
 
 void DataModel::changeData(int row, QSqlRecord &record)
 {
-    qDebug() << record;
     QJsonObject textObject;
     textObject["action"] = DataModel::ActionType::setElement;
     QJsonArray dataArray;
-        QJsonObject jsonRow;
-        jsonRow["ID"] = record.value("ID").toInt();
-        jsonRow["Name"] = record.value("Name").toString();
-        jsonRow["Telefon"] = record.value("Telefon").toString();
-        if(record.value("Country").type() == QVariant::Type::String){
-            QSqlQuery qu;
-            qu.prepare("SELECT id FROM country WHERE name = ?");
-            qu.bindValue(0, record.value("Country"));
-            qu.exec();
-            qu.first();
-            jsonRow["Country"] = qu.value(0).toInt();
-        }
-        else
-            jsonRow["Country"] = record.value("Country").toInt();
-        dataArray.append(jsonRow);
+    QJsonObject jsonRow;
+    jsonRow["ID"] = record.value("ID").toInt();
+    jsonRow["Name"] = record.value("Name").toString();
+    jsonRow["Telefon"] = record.value("Telefon").toString();
+    if(record.value("Country").type() == QVariant::Type::String){
+        QSqlQuery qu;
+        qu.prepare("SELECT id FROM country WHERE name = ?");
+        qu.bindValue(0, record.value("Country"));
+        qu.exec();
+        qu.first();
+        jsonRow["Country"] = qu.value(0).toInt();
+    }
+    else
+        jsonRow["Country"] = record.value("Country").toInt();
+    dataArray.append(jsonRow);
 
     textObject["data"] = dataArray;
     emit(writeData(QJsonDocument(textObject).toJson(QJsonDocument::Compact)));

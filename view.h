@@ -21,7 +21,6 @@ private slots:
 public:
                 View(QAbstractItemModel* pitemModel, QWidget *parent = nullptr);
                 ~View();
-
 public slots:
     void        changeState(QString state);
 signals:
